@@ -16,6 +16,8 @@ class FoodModel extends Model
         'discount_price',
         'vat_percentage',
         'stock_quantity',
-        'status'
+        'status',
+        'image',
+
     ];
 }

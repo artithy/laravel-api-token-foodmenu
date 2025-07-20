@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CuisineController;
 use App\Http\Controllers\FoodController;
@@ -14,6 +15,7 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/register', [UserController::class, 'store']);
 Route::post('/login', [UserController::class, 'login']);
+Route::post('/test', [UserController::class, 'test']);
 
 
 Route::middleware([AuthMiddleWare::class])->group(function () {
@@ -23,4 +25,10 @@ Route::middleware([AuthMiddleWare::class])->group(function () {
     Route::get('/food', [FoodController::class, 'foodWithCuisine']);
     Route::get('/dashboard', [UserController::class, 'dashboard']);
     Route::post('/logout', [UserController::class, 'logout']);
+    Route::put('/food/{id}', [FoodController::class, 'update']);
+    Route::delete('/food/{id}', [FoodController::class, 'destroy']);
+    Route::patch('/food/{id}/deactivate', [FoodController::class, 'deactivate']);
 });
+
+Route::post('/cart', [CartController::class, 'create']);
+Route::get('/cart/{cart_token}', [CartController::class, 'get']);

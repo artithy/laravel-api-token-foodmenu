@@ -116,4 +116,21 @@ class UserController extends Controller
             'message' => 'logout successfully',
         ]);
     }
+
+    // public function test(Request $request)
+    // {
+
+    //     $imageData = $request->image;
+
+    //     $imageInfo = explode(",", $imageData);
+    //     $type = str_replace(["data:image/", ";base64"], "", $imageInfo[0]);
+    //     $imageName = "images/" . rand() . "." . $type;
+    //     // data:image/jpeg;base64"
+    //     try {
+    //         file_put_contents($imageName, file_get_contents($imageData));
+    //     } catch (\Throwable $th) {
+    //         echo $th->getMessage();
+    //     }
+    //     return response()->json([]);
+    // }
 }
