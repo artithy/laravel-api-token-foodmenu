@@ -33,4 +33,15 @@ class CuisineController extends Controller
             'cuisine' => $cuisine,
         ]);
     }
+
+    public function getCuisineWithFood()
+    {
+
+        $data = CuisineModel::with('foods')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ]);
+    }
 }

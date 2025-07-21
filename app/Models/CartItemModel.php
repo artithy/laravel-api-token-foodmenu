@@ -8,9 +8,10 @@ class CartItemModel extends Model
 {
     protected $table = 'cart_items';
 
-    protected $fillable = [
-        'cart_id',
-        'food_id',
-        'quantity',
-    ];
+    protected $fillable = ['cart_id', 'food_id', 'quantity'];
+
+    public function food()
+    {
+        return $this->belongsTo(FoodModel::class, 'food_id');
+    }
 }

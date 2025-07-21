@@ -16,4 +16,9 @@ class OrderModel extends Model
         'customer_address',
         'payment_status',
     ];
+
+    public function cart()
+    {
+        return $this->belongsTo(CartModel::class, 'cart_id');
+    }
 }

@@ -118,16 +118,41 @@ class FoodController extends Controller
         return response()->json(['message' => 'Food deleted successfully']);
     }
 
-    public function deactivate($id)
+    public function toggleStatus($id)
     {
         $food = FoodModel::find($id);
         if (!$food) {
             return response()->json(['message' => 'Food not found'], 404);
         }
 
-        $food->status = 'inactive';
+
+        $food->status = ($food->status === 'active') ? 'inactive' : 'active';
         $food->save();
 
-        return response()->json(['message' => 'Food deactivated successfully']);
+        return response()->json(['message' => 'Food status updated successfully', 'status' => $food->status]);
+    }
+
+    public function activeFoods()
+    {
+        $foods = FoodModel::leftjoin("cuisine", "food.cuisine_id", "=", "cuisine.id")
+            ->select(
+                "food.id",
+                "food.name",
+                "food.description",
+                "food.price",
+                "cuisine.name as cuisine_name",
+                "food.discount_price",
+                "food.vat_percentage",
+                "food.stock_quantity",
+                "food.status",
+                "food.image",
+                "food.created_at"
+            )
+            ->where('food.status', 'active')
+            ->get();
+
+        return response()->json([
+            'foods' => $foods,
+        ]);
     }
 }

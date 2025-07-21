@@ -15,4 +15,9 @@ class CuisineModel extends Model
     protected $fillable = [
         'name'
     ];
+
+    public function foods()
+    {
+        return $this->hasMany(FoodModel::class, 'cuisine_id', 'id');
+    }
 }

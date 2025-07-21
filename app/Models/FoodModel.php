@@ -20,4 +20,9 @@ class FoodModel extends Model
         'image',
 
     ];
+
+    public function cuisine()
+    {
+        return $this->belongsTo(CuisineModel::class, 'cuisine_id', 'id');
+    }
 }
