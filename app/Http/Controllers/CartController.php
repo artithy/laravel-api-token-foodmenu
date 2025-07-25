@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CartItemModel; // Assuming this is your CartItem model
-use App\Models\CartModel;    // Assuming this is your Cart model
-use App\Models\FoodModel;   // Assuming this is your Food model
+use App\Models\CartItemModel;
+use App\Models\CartModel;
+use App\Models\FoodModel;
 
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    // Existing method: Create a new cart (likely for authenticated users or initial setup)
+
     public function create(Request $request)
     {
         $cart = CartModel::create([
@@ -24,7 +24,7 @@ class CartController extends Controller
         ], 201);
     }
 
-    // Existing method: Add item to a cart (requires cart_id in URL, likely for authenticated users)
+
     public function addItem(Request $request, $cart_id)
     {
         $request->validate([
@@ -32,23 +32,22 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        // You might want to fetch food details here to get price for CartItemModel
-        // $food = FoodModel::find($request->food_id);
+
 
         $item = CartItemModel::create([
             'cart_id' => $cart_id,
             'food_id' => $request->food_id,
             'quantity' => $request->quantity,
-            // 'price' => $food->discount_price, // Add price if your CartItemModel has it
+
         ]);
 
         return response()->json(['message' => 'Item added to cart', 'item' => $item]);
     }
 
-    // Existing method: Get cart details by token (likely for authenticated users)
+
     public function get($cart_token)
     {
-        // Assuming 'items' is the relationship name in CartModel for CartItemModel
+
         $cart = CartModel::where('cart_token', $cart_token)->with('items')->first();
 
         if (!$cart) {
@@ -60,11 +59,11 @@ class CartController extends Controller
         ], 200);
     }
 
-    // NEW Method: Get Guest Cart details by token (for public access)
+
     public function getGuestCart($cart_token)
     {
         $cart = CartModel::where('cart_token', $cart_token)
-            ->with(['cartItems.food']) // Ensure 'cartItems' is the correct relationship name in CartModel
+            ->with(['cartItems.food'])
             ->first();
 
         if (!$cart) {
@@ -77,7 +76,7 @@ class CartController extends Controller
                     'food_id' => $item->food_id,
                     'food_name' => $item->food->name,
                     'quantity' => $item->quantity,
-                    'price' => $item->food->discount_price, // Use discount_price for cart
+                    'price' => $item->food->discount_price,
                     'image' => $item->food->image,
                     'item_total' => ($item->quantity * $item->food->discount_price),
                 ];
@@ -88,13 +87,13 @@ class CartController extends Controller
         return response()->json(['cart_items' => $formattedCartItems]);
     }
 
-    // NEW Method: Add/Update item in Guest Cart (for public access)
+
     public function addGuestItem(Request $request)
     {
         $request->validate([
             'food_id' => 'required|integer|exists:food,id',
-            'quantity' => 'required|integer|min:0', // Quantity can be 0 to remove item
-            'cart_token' => 'required|string', // Guest cart token
+            'quantity' => 'required|integer|min:0',
+            'cart_token' => 'required|string',
         ]);
 
         $food = FoodModel::find($request->food_id);
@@ -108,7 +107,7 @@ class CartController extends Controller
 
         $cart = CartModel::firstOrCreate(
             ['cart_token' => $request->cart_token],
-            ['user_id' => null] // For guest carts, user_id is null
+            ['user_id' => null]
         );
 
         $cartItem = CartItemModel::where('cart_id', $cart->id)
@@ -118,19 +117,19 @@ class CartController extends Controller
         if ($request->quantity > 0) {
             if ($cartItem) {
                 $cartItem->quantity = $request->quantity;
-                $cartItem->price = $food->discount_price; // Update price if it changed
+                $cartItem->price = $food->discount_price;
                 $cartItem->save();
             } else {
                 CartItemModel::create([
                     'cart_id' => $cart->id,
                     'food_id' => $food->id,
                     'quantity' => $request->quantity,
-                    'price' => $food->discount_price, // Price at the time of adding
+                    'price' => $food->discount_price,
                 ]);
             }
             return response()->json(['message' => 'Item updated in cart successfully!'], 200);
         } else {
-            // If quantity is 0, remove the item from cart
+
             if ($cartItem) {
                 $cartItem->delete();
                 return response()->json(['message' => 'Item removed from cart.'], 200);

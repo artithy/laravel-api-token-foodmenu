@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class CartItemController extends Controller
 {
-    // 🟢 Add item to cart
+
     public function addItem(Request $request)
     {
         $request->validate([
@@ -17,20 +17,19 @@ class CartItemController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        // cart token diye cart ber kora
+
         $cart = CartModel::where('cart_token', $request->cart_token)->first();
 
-        // check: same food already ache kina
         $existingItem = CartItemModel::where('cart_id', $cart->id)
             ->where('food_id', $request->food_id)
             ->first();
 
         if ($existingItem) {
-            // thakle quantity update
+
             $existingItem->quantity += $request->quantity;
             $existingItem->save();
         } else {
-            // na thakle notun kore insert
+
             CartItemModel::create([
                 'cart_id' => $cart->id,
                 'food_id' => $request->food_id,

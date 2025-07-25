@@ -9,7 +9,6 @@ class CuisineController extends Controller
 {
     public function store(Request $request)
     {
-
         $request->validate([
             'name' => 'required|unique:cuisine,name'
         ]);
@@ -25,7 +24,6 @@ class CuisineController extends Controller
     }
 
     public function getAllCuisine(Request $request)
-
     {
         $cuisine = CuisineModel::all();
 
@@ -37,11 +35,18 @@ class CuisineController extends Controller
     public function getCuisineWithFood()
     {
 
-        $data = CuisineModel::with('foods')->get();
+        $cuisines = CuisineModel::with(['foods' => function ($query) {}])->get();
+
+
+        $cuisines->each(function ($cuisine) {
+            $cuisine->foods->each(function ($food) use ($cuisine) {
+                $food->cuisine_name = $cuisine->name;
+            });
+        });
 
         return response()->json([
             'success' => true,
-            'data' => $data
+            'data' => $cuisines
         ]);
     }
 }

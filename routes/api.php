@@ -30,6 +30,7 @@ Route::middleware([AuthMiddleWare::class])->group(function () {
     Route::put('/food/{id}', [FoodController::class, 'update']);
     Route::delete('/food/{id}', [FoodController::class, 'destroy']);
     Route::patch('/food/{id}/toggle-status', [FoodController::class, 'toggleStatus']);
+    Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);
 });
 
 Route::get('/foods/active', [FoodController::class, 'activeFoods']);
@@ -43,3 +44,5 @@ Route::get('cuisines-with-food', [CuisineController::class, 'getCuisineWithFood'
 
 Route::post('/cart/guest/add', [CartController::class, 'addGuestItem']);
 Route::get('/cart/guest/{cart_token}', [CartController::class, 'getGuestCart']);
+
+Route::post('/place-order', [OrderController::class, 'placeOrder']);
